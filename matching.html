@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vorge — Matching</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #0f0f13; color: #fff; min-height: 100vh; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; border-bottom: 1px solid #ffffff10; }
+    .logo { font-size: 20px; font-weight: 600; color: #fff; text-decoration: none; }
+    .logo span { color: #7F77DD; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-right a { font-size: 14px; color: #ffffff60; text-decoration: none; }
+    .nav-right a:hover { color: #fff; }
+    .btn { padding: 8px 18px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'Inter', sans-serif; background: #7F77DD; border: none; color: #fff; }
+    .layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 57px); }
+    .sidebar { border-right: 1px solid #ffffff10; padding: 24px 16px; }
+    .sidebar-title { font-size: 12px; font-weight: 500; color: #ffffff40; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+    .filter-group { margin-bottom: 24px; }
+    .filter-label { font-size: 13px; color: #ffffff70; margin-bottom: 8px; }
+    select, input[type=range] { width: 100%; }
+    select { padding: 8px 10px; background: #1a1a24; border: 1px solid #ffffff15; border-radius: 8px; color: #fff; font-size: 13px; font-family: 'Inter', sans-serif; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; border: 1px solid #ffffff15; color: #ffffff60; background: transparent; }
+    .chip.on { background: #7F77DD20; border-color: #7F77DD; color: #9f97ed; }
+    .range-wrap { display: flex; flex-direction: column; gap: 6px; }
+    .range-val { font-size: 12px; color: #ffffff50; text-align: right; }
+    input[type=range] { accent-color: #7F77DD; }
+    .apply-btn { width: 100%; padding: 10px; background: #7F77DD; border: none; border-radius: 8px; color: #fff; font-size: 14px; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .main { padding: 24px; }
+    .main-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .main-top h2 { font-size: 18px; font-weight: 600; }
+    .sort-wrap { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #ffffff60; }
+    .sort-wrap select { width: auto; padding: 6px 10px; font-size: 13px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+    .card { background: #1a1a24; border: 1px solid #ffffff10; border-radius: 14px; padding: 18px; transition: border-color 0.2s; }
+    .card:hover { border-color: #7F77DD40; }
+    .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .game-tag { font-size: 12px; padding: 3px 10px; border-radius: 6px; font-weight: 500; }
+    .val { background: #7F77DD20; color: #9f97ed; }
+    .lol { background: #378ADD20; color: #5fa8e8; }
+    .fn { background: #1D9E7520; color: #3dbf94; }
+    .cs { background: #D85A3020; color: #e07a55; }
+    .rl { background: #BA751720; color: #e09a3a; }
+    .rank { font-size: 12px; color: #ffffff40; }
+    .player { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .av { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+    .pname { font-size: 15px; font-weight: 500; }
+    .psub { font-size: 12px; color: #ffffff50; margin-top: 2px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .tag { font-size: 11px; padding: 3px 9px; border-radius: 6px; background: #ffffff08; color: #ffffff60; border: 1px solid #ffffff10; }
+    .card-bottom { display: flex; align-items: center; justify-content: space-between; }
+    .online { font-size: 12px; color: #ffffff50; display: flex; align-items: center; gap: 6px; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; }
+    .dot-green { background: #1D9E75; }
+    .dot-orange { background: #BA7517; }
+    .actions { display: flex; gap: 8px; }
+    .btn-ignore { padding: 6px 12px; background: transparent; border: 1px solid #ffffff15; border-radius: 7px; color: #ffffff60; font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .btn-join { padding: 6px 14px; background: #7F77DD; border: none; border-radius: 7px; color: #fff; font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .match-score { font-size: 11px; padding: 2px 8px; border-radius: 6px; background: #1D9E7520; color: #3dbf94; margin-left: 8px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Vo<span>rge</span></a>
+  <div class="nav-right">
+    <a href="index.html">Accueil</a>
+    <a href="matching.html">Trouver un squad</a>
+    <a href="profil.html">Mon profil</a>
+    <button class="btn">+ Créer un squad</button>
+  </div>
+</nav>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-title">Filtres</div>
+
+    <div class="filter-group">
+      <div class="filter-label">Jeu</div>
+      <select>
+        <option>Tous les jeux</option>
+        <option>Valorant</option>
+        <option>League of Legends</option>
+        <option>CS2</option>
+        <option>Fortnite</option>
+        <option>Rocket League</option>
+        <option>Apex Legends</option>
+        <option>Overwatch 2</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Rang</div>
+      <select>
+        <option>Tous les rangs</option>
+        <option>Iron / Bronze</option>
+        <option>Silver / Gold</option>
+        <option>Platinum / Diamond</option>
+        <option>Master+</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Style de jeu</div>
+      <div class="chips">
+        <div class="chip on">Compétitif</div>
+        <div class="chip">Chill</div>
+        <div class="chip">Progression</div>
+        <div class="chip">Tournois</div>
+        <div class="chip">Fun</div>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Langue</div>
+      <div class="chips">
+        <div class="chip on">FR</div>
+        <div class="chip">EN</div>
+        <div class="chip">ES</div>
+        <div class="chip">DE</div>
+        <div class="chip">PT</div>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Disponibilité</div>
+      <div class="chips">
+        <div class="chip on">En ligne</div>
+        <div class="chip">Soirées</div>
+        <div class="chip">Week-end</div>
+        <div class="chip">Matin</div>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Micro obligatoire</div>
+      <div class="chips">
+        <div class="chip on">Oui</div>
+        <div class="chip">Non</div>
+        <div class="chip">Peu importe</div>
+      </div>
+    </div>
+
+    <button class="apply-btn">Appliquer les filtres</button>
+  </div>
+
+  <div class="main">
+    <div class="main-top">
+      <h2>Joueurs disponibles <span style="font-size:14px;color:#ffffff40;font-weight:400">· 248 résultats</span></h2>
+      <div class="sort-wrap">
+        Trier par
+        <select>
+          <option>Meilleur match</option>
+          <option>En ligne d'abord</option>
+          <option>Rang le plus proche</option>
+          <option>Récemment actif</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-top">
+          <div style="display:flex;align-items:center;">
+            <span class="game-tag val">Valorant</span>
+            <span class="match-score">98% match</span>
+          </div>
+          <span class="rank">Diamond 2</span>
+        </div>
+        <div class="player">
+          <div class="av" style="background:#7F77DD30;color:#9f97ed;">NX</div>
+          <div><div class="pname">Noxys</div><div class="psub">Duelist · FR · 21 ans</div></div>
+        </div>
+        <div class="tags"><span class="tag">Sérieux</span><span class="tag">Micro oui</span><span class="tag">Soirées</span></div>
+        <div class="card-bottom">
+          <div class="online"><span class="dot dot-green"></span>En ligne</div>
+          <div class="actions">
+            <button class="btn-ignore">Ignorer</button>
+            <button class="btn-join">Inviter</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div style="display:flex;align-items:center;">
+            <span class="game-tag val">Valorant</span>
+            <span class="match-score">91% match</span>
+          </div>
+          <span class="rank">Diamond 1</span>
+        </div>
+        <div class="player">
+          <div class="av" style="background:#1D9E7530;color:#3dbf94;">KZ</div>
+          <div><div class="pname">Kaziro</div><div class="psub">Controller · FR · 23 ans</div></div>
+        </div>
+        <div class="tags"><span class="tag">Strat caller</span><span class="tag">Micro oui</span><span class="tag">Tournois</span></div>
+        <div class="card-bottom">
+          <div class="online"><span class="dot dot-green"></span>En ligne</div>
+          <div class="actions">
+            <button class="btn-ignore">Ignorer</button>
+            <button class="btn-join">Inviter</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div style="display:flex;align-items:center;">
+            <span class="game-tag lol">LoL</span>
+            <span class="match-score">87% match</span>
+          </div>
+          <span class="rank">Platinum 1</span>
+        </div>
+        <div class="player">
+          <div class="av" style="background:#378ADD30;color:#5fa8e8;">SK</div>
+          <div><div class="pname">Skyvex</div><div class="psub">Support · BE · 19 ans</div></div>
+        </div>
+        <div class="tags"><span class="tag">Chill</span><span class="tag">Draft flex</span><span class="tag">Week-end</span></div>
+        <div class="card-bottom">
+          <div class="online"><span class="dot dot-green"></span>En ligne</div>
+          <div class="actions">
+            <button class="btn-ignore">Ignorer</button>
+            <button class="btn-join">Inviter</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div style="display:flex;align-items:center;">
+            <span class="game-tag cs">CS2</span>
+            <span class="match-score">84% match</span>
+          </div>
+          <span class="rank">Global Elite</span>
+        </div>
+        <div class="player">
+          <div class="av" style="background:#D85A3030;color:#e07a55;">MK</div>
+          <div><div class="pname">Mykael</div><div class="psub">AWP · CH · 23 ans</div></div>
+        </div>
+        <div class="tags"><span class="tag">FACEIT lvl 9</span><span class="tag">Micro oui</span><span class="tag">Nuit</span></div>
+        <div class="card-bottom">
+          <div class="online"><span class="dot dot-orange"></span>Récemment actif</div>
+          <div class="actions">
+            <button class="btn-ignore">Ignorer</button>
+            <button class="btn-join">Inviter</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div style="display:flex;align-items:center;">
+            <span class="game-tag fn">Fortnite</span>
+            <span class="match-score">79% match</span>
+          </div>
+          <span class="rank">Champion</span>
+        </div>
+        <div class="player">
+          <div class="av" style="background:#1D9E7530;color:#3dbf94;">ZR</div>
+          <div><div class="pname">Zeraph</div><div class="psub">Fragger · FR · 17 ans</div></div>
+        </div>
+        <div class="tags"><span class="tag">Compétitif</span><span class="tag">Tournois</span><span class="tag">Tous les jours</span></div>
+        <div class="card-bottom">
+          <div class="online"><span class="dot dot-green"></span>En ligne</div>
+          <div class="actions">
+            <button class="btn-ignore">Ignorer</button>
+            <button class="btn-join">Inviter</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div style="display:flex;align-items:center;">
+            <span class="game-tag rl">Rocket League</span>
+            <span class="match-score">74% match</span>
+          </div>
+          <span class="rank">Grand Champion</span>
+        </div>
+        <div class="player">
+          <div class="av" style="background:#BA751730;color:#e09a3a;">VX</div>
+          <div><div class="pname">Vexor</div><div class="psub">Striker · FR · 20 ans</div></div>
+        </div>
+        <div class="tags"><span class="tag">Mécanique</span><span class="tag">Micro oui</span><span class="tag">Soirées</span></div>
+        <div class="card-bottom">
+          <div class="online"><span class="dot dot-green"></span>En ligne</div>
+          <div class="actions">
+            <button class="btn-ignore">Ignorer</button>
+            <button class="btn-join">Inviter</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => chip.classList.toggle('on'));
+  });
+</script>
+
+</body>
+</html>
