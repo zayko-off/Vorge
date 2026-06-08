@@ -8,8 +8,9 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', sans-serif; background: #0f0f13; color: #fff; min-height: 100vh; display: flex; flex-direction: column; }
+    a { text-decoration: none; }
     nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; border-bottom: 1px solid #ffffff10; }
-    .logo { font-size: 20px; font-weight: 600; color: #fff; text-decoration: none; }
+    .logo { font-size: 20px; font-weight: 600; color: #fff; }
     .logo span { color: #7F77DD; }
     .center { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
     .box { background: #1a1a24; border: 1px solid #ffffff10; border-radius: 16px; padding: 36px; width: 100%; max-width: 420px; }
@@ -22,16 +23,18 @@
     .field input::placeholder { color: #ffffff30; }
     .field input:focus { outline: none; border-color: #7F77DD50; }
     .btn-full { width: 100%; padding: 12px; background: #7F77DD; border: none; border-radius: 8px; color: #fff; font-size: 15px; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; margin-top: 8px; }
+    .btn-full:disabled { opacity: 0.5; cursor: not-allowed; }
     .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
     .divider span { font-size: 12px; color: #ffffff30; }
     .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #ffffff10; }
     .btn-discord { width: 100%; padding: 11px; background: #5865F2; border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .forgot { text-align: center; margin-top: 16px; font-size: 13px; color: #ffffff40; cursor: pointer; }
-    .forgot:hover { color: #7F77DD; }
     .form { display: none; }
     .form.active { display: block; }
     .terms { font-size: 12px; color: #ffffff30; text-align: center; margin-top: 16px; line-height: 1.6; }
     .terms span { color: #7F77DD; cursor: pointer; }
+    .alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: none; }
+    .alert-error { background: #D85A3020; border: 1px solid #D85A3040; color: #e07a55; }
+    .alert-success { background: #1D9E7520; border: 1px solid #1D9E7540; color: #3dbf94; }
   </style>
 </head>
 <body>
@@ -47,40 +50,42 @@
       <div class="tab" onclick="switchTab('register')">Inscription</div>
     </div>
 
+    <div class="alert alert-error" id="error"></div>
+    <div class="alert alert-success" id="success"></div>
+
     <div class="form active" id="login">
       <div class="field">
         <label>Email</label>
-        <input type="email" placeholder="ton@email.com" />
+        <input type="email" id="login-email" placeholder="ton@email.com" />
       </div>
       <div class="field">
         <label>Mot de passe</label>
-        <input type="password" placeholder="••••••••" />
+        <input type="password" id="login-password" placeholder="••••••••" />
       </div>
-      <button class="btn-full">Se connecter</button>
+      <button class="btn-full" id="login-btn" onclick="handleLogin()">Se connecter</button>
       <div class="divider"><span>ou</span></div>
-      <button class="btn-discord">
+      <button class="btn-discord" onclick="handleDiscord()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
         Continuer avec Discord
       </button>
-      <div class="forgot">Mot de passe oublié ?</div>
     </div>
 
     <div class="form" id="register">
       <div class="field">
         <label>Pseudo</label>
-        <input type="text" placeholder="TonPseudo" />
+        <input type="text" id="register-username" placeholder="TonPseudo" />
       </div>
       <div class="field">
         <label>Email</label>
-        <input type="email" placeholder="ton@email.com" />
+        <input type="email" id="register-email" placeholder="ton@email.com" />
       </div>
       <div class="field">
         <label>Mot de passe</label>
-        <input type="password" placeholder="••••••••" />
+        <input type="password" id="register-password" placeholder="••••••••" />
       </div>
-      <button class="btn-full">Créer mon compte</button>
+      <button class="btn-full" id="register-btn" onclick="handleRegister()">Créer mon compte</button>
       <div class="divider"><span>ou</span></div>
-      <button class="btn-discord">
+      <button class="btn-discord" onclick="handleDiscord()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
         Continuer avec Discord
       </button>
@@ -90,13 +95,78 @@
   </div>
 </div>
 
-<script>
-  function switchTab(tab) {
+<script type="module">
+  import { supabase } from './supabase.js'
+
+  function showError(msg) {
+    const el = document.getElementById('error')
+    el.textContent = msg
+    el.style.display = 'block'
+    document.getElementById('success').style.display = 'none'
+  }
+
+  function showSuccess(msg) {
+    const el = document.getElementById('success')
+    el.textContent = msg
+    el.style.display = 'block'
+    document.getElementById('error').style.display = 'none'
+  }
+
+  window.switchTab = (tab) => {
     document.querySelectorAll('.tab').forEach((t, i) => {
-      t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
-    });
-    document.getElementById('login').classList.toggle('active', tab === 'login');
-    document.getElementById('register').classList.toggle('active', tab === 'register');
+      t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'))
+    })
+    document.getElementById('login').classList.toggle('active', tab === 'login')
+    document.getElementById('register').classList.toggle('active', tab === 'register')
+    document.getElementById('error').style.display = 'none'
+    document.getElementById('success').style.display = 'none'
+  }
+
+  window.handleLogin = async () => {
+    const email = document.getElementById('login-email').value
+    const password = document.getElementById('login-password').value
+    const btn = document.getElementById('login-btn')
+    if (!email || !password) return showError('Remplis tous les champs !')
+    btn.disabled = true
+    btn.textContent = 'Connexion...'
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) {
+      showError('Email ou mot de passe incorrect')
+      btn.disabled = false
+      btn.textContent = 'Se connecter'
+    } else {
+      showSuccess('Connexion réussie ! Redirection...')
+      setTimeout(() => window.location.href = '/matching.html', 1000)
+    }
+  }
+
+  window.handleRegister = async () => {
+    const username = document.getElementById('register-username').value
+    const email = document.getElementById('register-email').value
+    const password = document.getElementById('register-password').value
+    const btn = document.getElementById('register-btn')
+    if (!username || !email || !password) return showError('Remplis tous les champs !')
+    if (password.length < 6) return showError('Mot de passe trop court (6 caractères min)')
+    btn.disabled = true
+    btn.textContent = 'Création...'
+    const { data, error } = await supabase.auth.signUp({ email, password })
+    if (error) {
+      showError(error.message)
+      btn.disabled = false
+      btn.textContent = 'Créer mon compte'
+    } else {
+      await supabase.from('profiles').insert({ id: data.user.id, username })
+      showSuccess('Compte créé ! Vérifie ton email pour confirmer.')
+      btn.disabled = false
+      btn.textContent = 'Créer mon compte'
+    }
+  }
+
+  window.handleDiscord = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'discord',
+      options: { redirectTo: window.location.origin + '/matching.html' }
+    })
   }
 </script>
 
