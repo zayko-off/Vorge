@@ -9,6 +9,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', sans-serif; background: #0f0f13; color: #fff; }
+    a { text-decoration: none; }
     nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 32px; border-bottom: 1px solid #ffffff10; }
     .logo { font-size: 20px; font-weight: 600; color: #fff; }
     .logo span { color: #7F77DD; }
@@ -60,8 +61,8 @@
 <nav>
   <div class="logo">Vo<span>rge</span></div>
   <div class="nav-btns">
-    <button class="btn btn-outline">Connexion</button>
-    <button class="btn btn-primary">S'inscrire</button>
+    <a href="/login.html"><button class="btn btn-outline">Connexion</button></a>
+    <a href="/login.html"><button class="btn btn-primary">S'inscrire</button></a>
   </div>
 </nav>
 
@@ -70,7 +71,7 @@
   <p>Matching intelligent de coéquipiers selon ton rang, style de jeu et dispo</p>
   <div class="search-wrap">
     <input type="text" placeholder="Jeu, rang, rôle..." />
-    <button class="btn btn-primary">Chercher</button>
+    <a href="/matching.html"><button class="btn btn-primary">Chercher</button></a>
   </div>
 </div>
 
@@ -95,27 +96,36 @@
     <div class="card-top"><span class="game-tag val">Valorant</span><span class="rank">Diamond 2</span></div>
     <div class="player"><div class="av av1">NX</div><div><div class="pname">Noxys</div><div class="psub">Duelist · FR · 21 ans</div></div></div>
     <div class="tags"><span class="tag">Sérieux</span><span class="tag">Micro obligatoire</span><span class="tag">Soirées</span></div>
-    <div class="card-bottom"><div class="online"><span class="dot"></span>En ligne</div><button class="join">Rejoindre</button></div>
+    <div class="card-bottom"><div class="online"><span class="dot"></span>En ligne</div><a href="/login.html"><button class="join">Rejoindre</button></a></div>
   </div>
   <div class="card">
     <div class="card-top"><span class="game-tag lol">League of Legends</span><span class="rank">Platinum 1</span></div>
     <div class="player"><div class="av av2">SK</div><div><div class="pname">Skyvex</div><div class="psub">Support · BE · 19 ans</div></div></div>
     <div class="tags"><span class="tag">Chill</span><span class="tag">Draft flex</span><span class="tag">Week-end</span></div>
-    <div class="card-bottom"><div class="online"><span class="dot"></span>En ligne</div><button class="join">Rejoindre</button></div>
+    <div class="card-bottom"><div class="online"><span class="dot"></span>En ligne</div><a href="/login.html"><button class="join">Rejoindre</button></a></div>
   </div>
   <div class="card">
     <div class="card-top"><span class="game-tag fn">Fortnite</span><span class="rank">Champion</span></div>
     <div class="player"><div class="av av3">ZR</div><div><div class="pname">Zeraph</div><div class="psub">Fragger · FR · 17 ans</div></div></div>
     <div class="tags"><span class="tag">Compétitif</span><span class="tag">Tournois</span><span class="tag">Tous les jours</span></div>
-    <div class="card-bottom"><div class="online"><span class="dot"></span>En ligne</div><button class="join">Rejoindre</button></div>
+    <div class="card-bottom"><div class="online"><span class="dot"></span>En ligne</div><a href="/login.html"><button class="join">Rejoindre</button></a></div>
   </div>
   <div class="card">
     <div class="card-top"><span class="game-tag cs">CS2</span><span class="rank">Global Elite</span></div>
     <div class="player"><div class="av av4">MK</div><div><div class="pname">Mykael</div><div class="psub">AWP · CH · 23 ans</div></div></div>
-    <div class="tags"><span class="tag">FACEIT lvl 9</span><span class="tag">Strat caller</span><span class="tag">Nuit</span></div>
-    <div class="card-bottom"><div class="online"><span class="dot"></span>En ligne</div><button class="join">Rejoindre</button></div>
+    <div class="tags"><span class="tag">FACEIT lvl 9</span><span class="tag">Micro obligatoire</span><span class="tag">Soirées</span></div>
+    <div class="card-bottom"><div class="online"><span class="dot"></span>En ligne</div><a href="/login.html"><button class="join">Rejoindre</button></a></div>
   </div>
 </div>
+
+<script>
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+</script>
 
 </body>
 </html>
